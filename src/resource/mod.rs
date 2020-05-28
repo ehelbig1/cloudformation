@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 /// # Example
 ///
 /// ```
-/// let resource = cloudformation::Resource::EC2Instance {
+/// let resource = cloudformation::resource::Resource::EC2Instance {
 ///     properties: Some(cloudformation::resource::ec2::instance::Properties::new()
 ///         .add_instance_type(cloudformation::resource::ec2::instance::InstanceType::T2_Micro)),
 /// };

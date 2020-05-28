@@ -2,22 +2,13 @@
 //!
 //! `cloudformation` is a library for generating and managing cloudformation templates
 
-mod condition;
-mod mapping;
-mod metadata;
-mod output;
-mod parameter;
-mod transform;
-
+pub mod condition;
+pub mod mapping;
+pub mod metadata;
+pub mod output;
+pub mod parameter;
 pub mod resource;
-
-pub use condition::Condition;
-pub use mapping::Mapping;
-pub use metadata::Metadata;
-pub use output::Output;
-pub use parameter::{Parameter, ParameterType};
-pub use resource::Resource;
-pub use transform::Transform;
+pub mod transform;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -41,37 +32,37 @@ pub struct Template {
     /// Optional Metadata for Cloudformation Template
     #[serde(rename = "Metadata")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<HashMap<String, Metadata>>,
+    metadata: Option<HashMap<String, metadata::Metadata>>,
 
     /// Optional Parameters for Cloudformation Template
     #[serde(rename = "Parameters")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    parameters: Option<HashMap<String, Parameter>>,
+    parameters: Option<HashMap<String, parameter::Parameter>>,
 
     /// Optional Mappings for Cloudformation Template
     #[serde(rename = "Mappings")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    mappings: Option<HashMap<String, Mapping>>,
+    mappings: Option<HashMap<String, mapping::Mapping>>,
 
     /// Optional Conditions for Cloudformation Template
     #[serde(rename = "Conditions")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    conditions: Option<HashMap<String, Condition>>,
+    conditions: Option<HashMap<String, condition::Condition>>,
 
     /// Optional Transform for Cloudformation Template
     #[serde(rename = "Transform")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    transform: Option<Transform>,
+    transform: Option<transform::Transform>,
 
     /// Optional Resource for Cloudformation Template
     #[serde(rename = "Resources")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    resources: Option<HashMap<String, Resource>>,
+    resources: Option<HashMap<String, resource::Resource>>,
 
     /// Optional Outputs for Cloudformation Template
     #[serde(rename = "Outputs")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    outputs: Option<HashMap<String, Output>>,
+    outputs: Option<HashMap<String, output::Output>>,
 }
 
 impl Template {
@@ -162,20 +153,20 @@ impl Template {
     /// # Arguments
     ///
     /// * `name: &str` - name of the metadata
-    /// * `data: cloudformation::Metadata` - template metadata
+    /// * `data: cloudformation::metadata::Metadata` - template metadata
     ///
     /// # Example
     ///
     /// ```
     /// use cloudformation::Template;
     /// let template = Template::new()
-    ///     .add_metadata("Example", cloudformation::Metadata {});
+    ///     .add_metadata("Example", cloudformation::metadata::Metadata {});
     /// ```
-    pub fn add_metadata(mut self, name: &str, data: Metadata) -> Self {
+    pub fn add_metadata(mut self, name: &str, data: metadata::Metadata) -> Self {
         if let Some(ref mut metadata) = self.metadata {
             metadata.insert(name.to_string(), data);
         } else {
-            let mut metadata: HashMap<String, Metadata> = HashMap::new();
+            let mut metadata: HashMap<String, metadata::Metadata> = HashMap::new();
             metadata.insert(name.to_string(), data);
 
             self.metadata = Some(metadata);
@@ -189,20 +180,20 @@ impl Template {
     /// # Arguments
     ///
     /// * `name: &str` - name of the parameter
-    /// * `parameter: cloudformation::Parameter`
+    /// * `parameter: cloudformation::parameter::Parameter`
     ///
     /// # Example
     ///
     /// ```
     /// use cloudformation::Template;
     /// let template = Template::new()
-    ///     .add_metadata("Example", cloudformation::Metadata {});
+    ///     .add_parameter("Example", cloudformation::parameter::Parameter::new(cloudformation::parameter::ParameterType::String));
     /// ```
-    pub fn add_parameter(mut self, name: &str, parameter: Parameter) -> Self {
+    pub fn add_parameter(mut self, name: &str, parameter: parameter::Parameter) -> Self {
         if let Some(ref mut parameters) = self.parameters {
             parameters.insert(name.to_string(), parameter);
         } else {
-            let mut parameters: HashMap<String, Parameter> = HashMap::new();
+            let mut parameters: HashMap<String, parameter::Parameter> = HashMap::new();
             parameters.insert(name.to_string(), parameter);
 
             self.parameters = Some(parameters);
@@ -216,20 +207,20 @@ impl Template {
     /// # Arguments
     ///
     /// * `name: &str` - name of the mapping
-    /// * `mapping: cloudformation::Mapping`
+    /// * `mapping: cloudformation::mapping::Mapping`
     ///
     /// # Example
     ///
     /// ```
     /// use cloudformation::Template;
     /// let template = Template::new()
-    ///     .add_metadata("Example", cloudformation::Metadata {});
+    ///     .add_mapping("Example", cloudformation::mapping::Mapping {});
     /// ```
-    pub fn add_mapping(mut self, name: &str, mapping: Mapping) -> Self {
+    pub fn add_mapping(mut self, name: &str, mapping: mapping::Mapping) -> Self {
         if let Some(ref mut mappings) = self.mappings {
             mappings.insert(name.to_string(), mapping);
         } else {
-            let mut mappings: HashMap<String, Mapping> = HashMap::new();
+            let mut mappings: HashMap<String, mapping::Mapping> = HashMap::new();
             mappings.insert(name.to_string(), mapping);
 
             self.mappings = Some(mappings);
@@ -243,20 +234,20 @@ impl Template {
     /// # Arguments
     ///
     /// * `name: &str` - name of the condition
-    /// * `condition: cloudformation::Condition`
+    /// * `condition: cloudformation::condition::Condition`
     ///
     /// # Example
     ///
     /// ```
     /// use cloudformation::Template;
     /// let template = Template::new()
-    ///     .add_condition("Example", cloudformation::Condition {});
+    ///     .add_condition("Example", cloudformation::condition::Condition {});
     /// ```
-    pub fn add_condition(mut self, name: &str, condition: Condition) -> Self {
+    pub fn add_condition(mut self, name: &str, condition: condition::Condition) -> Self {
         if let Some(ref mut conditions) = self.conditions {
             conditions.insert(name.to_string(), condition);
         } else {
-            let mut conditions: HashMap<String, Condition> = HashMap::new();
+            let mut conditions: HashMap<String, condition::Condition> = HashMap::new();
             conditions.insert(name.to_string(), condition);
 
             self.conditions = Some(conditions);
@@ -270,7 +261,7 @@ impl Template {
     /// # Arguments
     ///
     /// * `name: &str` - name of the transform
-    /// * `transform: cloudformation::Transform`
+    /// * `transform: cloudformation::transform::Transform`
     ///
     /// # Example
     ///
@@ -283,7 +274,7 @@ impl Template {
         if let Some(ref mut transforms) = self.transform {
             transforms.0.push(transform.to_string());
         } else {
-            let transforms: Transform = Transform::new(transform.to_string());
+            let transforms: transform::Transform = transform::Transform::new(transform.to_string());
 
             self.transform = Some(transforms);
         }
@@ -296,24 +287,24 @@ impl Template {
     /// # Arguments
     ///
     /// * `name: &str` - name of the resource
-    /// * `resource: cloudformation::Resource`
+    /// * `resource: cloudformation::resource::Resource`
     ///
     /// # Example
     ///
     /// ```
     /// use cloudformation::Template;
     /// let template = Template::new()
-    ///     .add_resource("Example", cloudformation::Resource::EC2Instance {
+    ///     .add_resource("Example", cloudformation::resource::Resource::EC2Instance {
     ///         properties: Some(cloudformation::resource::ec2::instance::Properties::new()
     ///             .add_instance_type(cloudformation::resource::ec2::instance::InstanceType::T2_Micro)
     ///         )
     ///     });
     /// ```
-    pub fn add_resource(mut self, name: &str, resource: Resource) -> Self {
+    pub fn add_resource(mut self, name: &str, resource: resource::Resource) -> Self {
         if let Some(ref mut resources) = self.resources {
             resources.insert(name.to_string(), resource);
         } else {
-            let mut resources: HashMap<String, Resource> = HashMap::new();
+            let mut resources: HashMap<String, resource::Resource> = HashMap::new();
             resources.insert(name.to_string(), resource);
 
             self.resources = Some(resources)
@@ -327,22 +318,22 @@ impl Template {
     /// # Arguments
     ///
     /// * `name: &str` - name of the output
-    /// * `output: cloudformation::Output`
+    /// * `output: cloudformation::output::Output`
     ///
     /// # Example
     ///
     /// ```
     /// use cloudformation::Template;
     /// let template = Template::new()
-    ///     .add_output("Example", cloudformation::Output {
+    ///     .add_output("Example", cloudformation::output::Output {
     ///         description: None,
     ///     });
     /// ```
-    pub fn add_output(mut self, name: &str, output: Output) -> Self {
+    pub fn add_output(mut self, name: &str, output: output::Output) -> Self {
         if let Some(ref mut outputs) = self.outputs {
             outputs.insert(name.to_string(), output);
         } else {
-            let mut outputs: HashMap<String, Output> = HashMap::new();
+            let mut outputs: HashMap<String, output::Output> = HashMap::new();
             outputs.insert(name.to_string(), output);
 
             self.outputs = Some(outputs);
@@ -392,12 +383,15 @@ fn add_description() {
 
 #[test]
 fn add_parameter() {
-    let template = Template::new().add_parameter("Test", Parameter::new(ParameterType::String));
+    let template = Template::new().add_parameter(
+        "Test",
+        parameter::Parameter::new(parameter::ParameterType::String),
+    );
 
     let mut parameters = HashMap::new();
     parameters.insert(
         String::from("Test"),
-        Parameter {
+        parameter::Parameter {
             allowed_pattern: None,
             allowed_values: None,
             contraint_description: None,
@@ -408,7 +402,7 @@ fn add_parameter() {
             min_length: None,
             min_value: None,
             no_echo: None,
-            parameter_type: ParameterType::String,
+            parameter_type: parameter::ParameterType::String,
         },
     );
     assert_eq!(
@@ -429,12 +423,13 @@ fn add_parameter() {
 
 #[test]
 fn add_resource() {
-    let template = Template::new().add_resource("Test", Resource::EC2Instance { properties: None });
+    let template =
+        Template::new().add_resource("Test", resource::Resource::EC2Instance { properties: None });
 
     let mut resources = HashMap::new();
     resources.insert(
         String::from("Test"),
-        Resource::EC2Instance { properties: None },
+        resource::Resource::EC2Instance { properties: None },
     );
     assert_eq!(
         template,
@@ -472,7 +467,10 @@ fn display_template_with_description() {
 
 #[test]
 fn display_template_with_parameter() {
-    let template = Template::new().add_parameter("Test", Parameter::new(ParameterType::String));
+    let template = Template::new().add_parameter(
+        "Test",
+        parameter::Parameter::new(parameter::ParameterType::String),
+    );
     assert_eq!(
         serde_yaml::to_string(&template).unwrap(),
         String::from(
@@ -498,8 +496,14 @@ fn display_template_with_parameter() {
 #[test]
 fn display_template_with_duplicate_parameters() {
     let template = Template::new()
-        .add_parameter("Test", Parameter::new(ParameterType::String))
-        .add_parameter("Test", Parameter::new(ParameterType::Number));
+        .add_parameter(
+            "Test",
+            parameter::Parameter::new(parameter::ParameterType::String),
+        )
+        .add_parameter(
+            "Test",
+            parameter::Parameter::new(parameter::ParameterType::Number),
+        );
     assert_eq!(
         serde_yaml::to_string(&template).unwrap(),
         String::from(
@@ -512,7 +516,10 @@ fn display_template_with_duplicate_parameters() {
 fn display_template_with_description_and_parameter() {
     let template = Template::new()
         .add_description("This is a test")
-        .add_parameter("Test", Parameter::new(ParameterType::String));
+        .add_parameter(
+            "Test",
+            parameter::Parameter::new(parameter::ParameterType::String),
+        );
     assert_eq!(
         serde_yaml::to_string(&template).unwrap(),
         String::from(
@@ -523,7 +530,8 @@ fn display_template_with_description_and_parameter() {
 
 #[test]
 fn display_template_with_resource() {
-    let template = Template::new().add_resource("Test", Resource::EC2Instance { properties: None });
+    let template =
+        Template::new().add_resource("Test", resource::Resource::EC2Instance { properties: None });
     assert_eq!(
         serde_yaml::to_string(&template).unwrap(),
         String::from(
@@ -535,8 +543,8 @@ fn display_template_with_resource() {
 #[test]
 fn display_template_with_duplicate_resources() {
     let template = Template::new()
-        .add_resource("Test", Resource::EC2Instance { properties: None })
-        .add_resource("Test", Resource::EC2Instance { properties: None });
+        .add_resource("Test", resource::Resource::EC2Instance { properties: None })
+        .add_resource("Test", resource::Resource::EC2Instance { properties: None });
     assert_eq!(
         serde_yaml::to_string(&template).unwrap(),
         String::from(
