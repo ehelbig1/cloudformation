@@ -101,7 +101,7 @@ impl Template {
     ///
     /// # Arguments
     ///
-    /// * `file` - &str - name of the template file to read from
+    /// * `file &str` - name of the template file to read from
     ///
     /// # Example
     ///
@@ -122,7 +122,7 @@ impl Template {
     ///
     /// # Arguments
     ///
-    /// * `output` - &str - name of the file to write to
+    /// * `output: &str` - name of the file to write to
     ///
     /// # Example
     ///
@@ -142,7 +142,7 @@ impl Template {
     ///
     /// # Arguments
     ///
-    /// * `description` - &str - description of the template
+    /// * `description: &str` - description of the template
     ///
     /// # Example
     ///
@@ -161,8 +161,8 @@ impl Template {
     ///
     /// # Arguments
     ///
-    /// * `name` - &str - name of the metadata
-    /// * `data` - Metadata - template metadata
+    /// * `name: &str` - name of the metadata
+    /// * `data: cloudformation::Metadata` - template metadata
     ///
     /// # Example
     ///
@@ -188,8 +188,8 @@ impl Template {
     ///
     /// # Arguments
     ///
-    /// * `name` - &str - name of the parameter
-    /// * `
+    /// * `name: &str` - name of the parameter
+    /// * `parameter: cloudformation::Parameter`
     ///
     /// # Example
     ///
@@ -215,8 +215,8 @@ impl Template {
     ///
     /// # Arguments
     ///
-    /// * `name` - A string slice that holds the name of the mapping
-    /// * `mapping` -
+    /// * `name: &str` - name of the mapping
+    /// * `mapping: cloudformation::Mapping`
     ///
     /// # Example
     ///
@@ -238,6 +238,20 @@ impl Template {
         self
     }
 
+    /// Returns Self
+    ///
+    /// # Arguments
+    ///
+    /// * `name: &str` - name of the condition
+    /// * `condition: cloudformation::Condition`
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cloudformation::Template;
+    /// let template = Template::new()
+    ///     .add_condition("Example", cloudformation::Condition {});
+    /// ```
     pub fn add_condition(mut self, name: &str, condition: Condition) -> Self {
         if let Some(ref mut conditions) = self.conditions {
             conditions.insert(name.to_string(), condition);
@@ -251,6 +265,20 @@ impl Template {
         self
     }
 
+    /// Returns Self
+    ///
+    /// # Arguments
+    ///
+    /// * `name: &str` - name of the transform
+    /// * `transform: cloudformation::Transform`
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cloudformation::Template;
+    /// let template = Template::new()
+    ///     .add_transform("Example");
+    /// ```
     pub fn add_transform(mut self, transform: &str) -> Self {
         if let Some(ref mut transforms) = self.transform {
             transforms.0.push(transform.to_string());
@@ -263,6 +291,24 @@ impl Template {
         self
     }
 
+    /// Returns Self
+    ///
+    /// # Arguments
+    ///
+    /// * `name: &str` - name of the resource
+    /// * `resource: cloudformation::Resource`
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cloudformation::Template;
+    /// let template = Template::new()
+    ///     .add_resource("Example", cloudformation::Resource::EC2Instance {
+    ///         properties: Some(cloudformation::resource::ec2::instance::Properties::new()
+    ///             .add_instance_type(cloudformation::resource::ec2::instance::InstanceType::T2_Micro)
+    ///         )
+    ///     });
+    /// ```
     pub fn add_resource(mut self, name: &str, resource: Resource) -> Self {
         if let Some(ref mut resources) = self.resources {
             resources.insert(name.to_string(), resource);
@@ -276,6 +322,22 @@ impl Template {
         self
     }
 
+    /// Returns Self
+    ///
+    /// # Arguments
+    ///
+    /// * `name: &str` - name of the output
+    /// * `output: cloudformation::Output`
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use cloudformation::Template;
+    /// let template = Template::new()
+    ///     .add_output("Example", cloudformation::Output {
+    ///         description: None,
+    ///     });
+    /// ```
     pub fn add_output(mut self, name: &str, output: Output) -> Self {
         if let Some(ref mut outputs) = self.outputs {
             outputs.insert(name.to_string(), output);
